@@ -1,0 +1,5 @@
+{ 
+    "layout": "layout.njk",
+    "title": "Title set for layout.njk",
+    "initialState": { "custom": "data", "is": "here" }
+}
