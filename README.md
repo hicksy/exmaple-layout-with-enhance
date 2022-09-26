@@ -1,18 +1,9 @@
 # exmaple-layout-with-enhance
-An example using @enhance/eleventy-plugin with Eleventy's layout templates to help diagnose an issue
 
-```
-git clone git@github.com:hicksy/exmaple-layout-with-enhance.git
-npm install
-npm start
-```
+Using the pre-release version of Eleventy (at time of writting 2.0.0-canary.16), we can hook into the new `eleventy.after` hook signature, to re-parse and write the whole HTML document after eleventy has inserted the content into the specified layout. 
 
-STR:
+This example uses patch-package [see this gist](https://gist.github.com/hicksy/67bcc168782f4b093fb3127826dfa4c2) to add a new method `writeOutuput` to the @enhance/eleventy-plugin, which is then called during the `eleventy.after` hook. This hook fires after the page content has been parsed and then merged with the layout(s). 
 
-1. run `npm start`
-2. Open the `_site/index.html` and see duplicate <html>, <head> etc tags
+Using this hook we can ensure that the final written HTML contained in `_site` is valid, as @enhace's parser validates and fixes the unwanted html, head etc tags. 
 
 
-
-A basic site, using index.html paired with index.json. The index.json informs Eleventy to use the sitem template located in `_includes/layout.njk`. 
-It appears that Eleventy's template actions occur after the content for an idividual page has been rendered (and Enhance has rendered the custom elements)) 
