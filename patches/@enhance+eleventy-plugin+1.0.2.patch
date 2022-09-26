@@ -1,0 +1,34 @@
+diff --git a/node_modules/@enhance/eleventy-plugin/.eleventy.js b/node_modules/@enhance/eleventy-plugin/.eleventy.js
+index a4a7166..075e4a4 100644
+--- a/node_modules/@enhance/eleventy-plugin/.eleventy.js
++++ b/node_modules/@enhance/eleventy-plugin/.eleventy.js
+@@ -5,4 +5,10 @@ module.exports = function (eleventyConfig) {
+   eleventyConfig.addTemplateFormats(extension)
+   eleventyConfig.addExtension(extension, plugin)
+   eleventyConfig.addWatchTarget("./elements/**/*.mjs")
++  eleventyConfig.on('eleventy.after', async ({results}) => {
++    // Run me after the build ends
++    for(build of results) {
++      await plugin.outputWrite(build.content, build.outputPath)
++    }
++  });
+ }
+diff --git a/node_modules/@enhance/eleventy-plugin/plugin.js b/node_modules/@enhance/eleventy-plugin/plugin.js
+index a73ad4a..46e6b28 100644
+--- a/node_modules/@enhance/eleventy-plugin/plugin.js
++++ b/node_modules/@enhance/eleventy-plugin/plugin.js
+@@ -1,9 +1,13 @@
+ let enhance = require('./vendor/enhance-ssr.js')
+ let { join } = require('path')
+-let { existsSync: exists, readdirSync: ls } = require('fs')
++let { existsSync: exists, readdirSync: ls, writeFileSync } = require('fs')
+ let { importWithoutCache } = require('./utils')
+ 
+ module.exports = {
++  async outputWrite(content, path) {
++    let html = enhance()
++    await writeFileSync(path, html`${ content }`)
++  },
+   async compile (inputContent) {
+     return async function compiler ({ initialState={} }) {
+       let elements = await read()
